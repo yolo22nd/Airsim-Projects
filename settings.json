@@ -1,0 +1,111 @@
+{
+  "SettingsVersion": 1.2,
+  "SimMode": "Multirotor",
+  "OriginGeopoint": {
+    "Latitude": 47.641468,
+    "Longitude": -122.140165,
+    "Altitude": 0
+  },
+  "SubWindows": [
+    {"WindowID": 0, "ImageType": 0, "CameraName": "front", "Visible": true}
+  ],
+  "Vehicles": {
+      "uav1": {
+          "VehicleType": "SimpleFlight",
+          "DefaultVehicleState": "Armed",
+          "AutoCreate": true,
+          "PawnPath": "",
+          "EnableCollisionPassthrogh": false,
+          "EnableCollisions": true,
+          "AllowAPIAlways": true,
+          "EnableTrace": false,
+          "Cameras": {
+            "front": {
+              "CaptureSettings": [
+                {
+                  "ImageType": 0,
+                  "Width": 640,
+                  "Height": 480,
+                  "FOV_Degrees": 86
+                }
+              ],
+              "X": 0.50, "Y": 0.0, "Z": 0.10,
+              "Pitch": 0.0, "Roll": 0.0, "Yaw": 0.0
+            },
+            "front_downsampled": {
+              "CaptureSettings": [
+                {
+                  "ImageType": 0,
+                  "Width": 640,
+                  "Height": 480,
+                  "FOV_Degrees": 86
+                }
+              ],
+              "X": 0.50, "Y": 0.0, "Z": 0.10,
+              "Pitch": 0.0, "Roll": 0.0, "Yaw": 0.0
+            }
+          },
+          "Sensors":{
+              "Imu": {
+                  "SensorType": 2,
+                  "Enabled" : true,
+                  "AngularRandomWalk": 0.3,
+                  "GyroBiasStabilityTau": 500,
+                  "GyroBiasStability": 4.6,
+                  "VelocityRandomWalk": 0.24,
+                  "AccelBiasStabilityTau": 800,
+                  "AccelBiasStability": 36
+              },
+              "Gps": {
+                  "SensorType": 3,
+                  "Enabled" : true,
+                  "EphTimeConstant": 0.9,
+                  "EpvTimeConstant": 0.9,
+                  "EphInitial": 25,
+                  "EpvInitial": 25,
+                  "EphFinal": 0.1,
+                  "EpvFinal": 0.1,
+                  "EphMin3d": 3,
+                  "EphMin2d": 4,
+                  "UpdateLatency": 0.2,
+                  "UpdateFrequency": 50,
+                  "StartupDelay": 1
+              },
+              "Magnetometer": {
+                  "SensorType": 4,
+                  "Enabled" : true,
+                  "NoiseSigma": 0.005,
+                  "ScaleFactor": 1,
+                  "NoiseBias": 0,
+                  "UpdateLatency": 0,
+                  "UpdateFrequency": 50,
+                  "StartupDelay": 0
+              },
+              "Lidar": {
+                  "SensorType": 6,
+                  "Enabled" : true,
+                  "NumberOfChannels": 16,
+                  "RotationsPerSecond": 10,
+                  "PointsPerSecond": 300000,
+                  "X": 0, "Y": 0, "Z": 0,
+                  "Roll": 0, "Pitch": 0, "Yaw" : 0,
+                  "Range": 100,
+                  "VerticalFOVUpper": 30,
+                  "VerticalFOVLower": -30,
+                  "HorizontalFOVStart": -180,
+                  "HorizontalFOVEnd": 180,
+                  "DrawDebugPoints": false,
+                  "DataFrame": "SensorLocalFrame"
+              }
+          },
+          "Parameters": {
+              "NAV_RCL_ACT": 0,
+              "NAV_DLL_ACT": 0,
+              "COM_OBL_ACT": 1,
+              "LPE_LAT": 47.641468,
+              "LPE_LON": -122.140165
+          }
+      }
+  }
+}
+
