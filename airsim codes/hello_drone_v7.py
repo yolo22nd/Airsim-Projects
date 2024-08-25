@@ -1,5 +1,3 @@
-# torchscript
-
 import airsim
 import cv2
 import numpy as np
@@ -20,9 +18,7 @@ yolov5_path = Path('c:/Users/omtan/OneDrive/Desktop/Phoenix/Airsim-Projects/airs
 sys.path.append(str(yolov5_path))
 
 # Import YOLOv5 utils and models explicitly from yolov5 directory
-from yolov5.models.common import DetectMultiBackend
 from yolov5.utils.general import non_max_suppression, scale_boxes
-from yolov5.utils.plots import save_one_box
 from yolov5.utils.augmentations import letterbox
 
 # Connect to the AirSim simulator
@@ -31,16 +27,12 @@ client.confirmConnection()
 client.enableApiControl(True)
 client.armDisarm(True)
 
-
 # Load YOLOv5 model
-# weights_path = "C:\\Users\\omtan\\OneDrive\\Desktop\\Phoenix\\Airsim-Projects\\airsim codes\\yolov5\\best.pt"
+# model = torch.jit.load("best.torchscript")
+model = torch.jit.load("best_ak.torchscript")
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = torch.jit.load("best.torchscript")
 model.to(device)  # Move the model to the desired device (CPU or GPU)
-# names, pt = model.names, model.pt
 img_size = 640
-
-
 
 # Global variables
 running = True
@@ -52,15 +44,16 @@ FRAME_RATE = 22
 FRAME_INTERVAL = 1.0 / FRAME_RATE
 
 # Ensure 'names' is defined for your YOLO model classes
-names = ['square', 'triangle', 'circle', 'hotspot', 'target']
+names = ['circle', 'target', 'square', 'hotspot', 'triangle']
 
 def get_image():
     responses = client.simGetImages([airsim.ImageRequest("front", airsim.ImageType.Scene, False, False)])
     response = responses[0]
     img1d = np.frombuffer(response.image_data_uint8, dtype=np.uint8)
     img_rgb = img1d.reshape(response.height, response.width, 3)
-    return cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)
-
+    img_rgb = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)
+    img_rgb = cv2.resize(img_rgb, (img_size, img_size))  # Resize image to 640x640
+    return img_rgb
 
 last_frame_time = time.time()
 target_interval = 1.0 / 30  # Start with targeting 30 FPS
@@ -88,7 +81,6 @@ def update_image():
         logger.error(f"Error in update_image thread: {e}")
         running = False
 
-
 def process_image():
     global latest_image, processed_image, running
     frame_count = 0
@@ -108,7 +100,8 @@ def process_image():
                         img = img.unsqueeze(0)
 
                     # Inference
-                    pred = model(img)
+                    with torch.no_grad():
+                        pred = model(img)[0]
 
                     # Apply NMS
                     pred = non_max_suppression(pred, conf_thres=0.25, iou_thres=0.45, classes=None, agnostic=False)
@@ -138,7 +131,6 @@ def process_image():
         logger.error(f"Error in process_image thread: {e}")
         running = False
 
-        
 def display_image():
     global processed_image, running
     try:
@@ -206,34 +198,21 @@ async def main():
             client.moveToPositionAsync(5*np.cos(i*np.pi/2), 5*np.sin(i*np.pi/2), -20-i*2, 5)
             await asyncio.sleep(5)
 
-        # Descend with yaw
-        print("Descending with yaw...")
+        # Return to launch
+        print("Returning to launch...")
         client.moveToPositionAsync(0, 0, -15, 5)
-        client.rotateToYawAsync(360, 10)
-        await asyncio.sleep(10)
-
-        # Move to 1 meters height
-        print("Moving to 1 meter altitude...")
-        client.moveToPositionAsync(0, 0, -1, 5)
-        await asyncio.sleep(5)  # Allow time to reach the target altitude
-
-        # Land
-        print("Landing...")
+        await asyncio.sleep(5)
         client.landAsync()
-        
-        # Wait for the drone to actually land
-        while client.getMultirotorState().landed_state != airsim.LandedState.Landed:
-            await asyncio.sleep(1)
-        
-        print("Landing complete")
+        await asyncio.sleep(5)
 
-    except KeyboardInterrupt:
-        logger.info("Operation interrupted by user")
+        logger.info("Mission completed")
+        graceful_shutdown()
     except Exception as e:
-        logger.error(f"Unexpected error in main function: {e}")
+        logger.error(f"Error in main function: {e}")
     finally:
         graceful_shutdown()
 
-# Run the main function
 if __name__ == "__main__":
-    asyncio.run(main())
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
+    loop.close()

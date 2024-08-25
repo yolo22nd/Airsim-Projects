@@ -7,7 +7,9 @@ import GPUtil
 
 # Load YOLOv5 model
 # weights_path = "C:\\Users\\omtan\\OneDrive\\Desktop\\Phoenix\\airsim codes\\yolov5\\best.torchscript"
-weights_path = "C:\\Users\\omtan\\OneDrive\\Desktop\\Phoenix\\airsim codes\\yolov5\\best_ak.torchscript"
+# weights_path = "C:\\Users\\omtan\\OneDrive\\Desktop\\Phoenix\\airsim codes\\yolov5\\best_ak.torchscript"
+weights_path = "best.torchscript"
+# weights_path = "best_ak.torchscript"
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = torch.jit.load(weights_path).to(device)
 img_size = 640

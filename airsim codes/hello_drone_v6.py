@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Add the path to the yolov5 repository
-yolov5_path = Path('c:/Users/omtan/OneDrive/Desktop/Phoenix/airsim codes/yolov5')
+yolov5_path = Path('C:\\Users\\omtan\\OneDrive\\Desktop\\Phoenix\\Airsim-Projects\\airsim codes\\yolov5')
 sys.path.append(str(yolov5_path))
 
 # Import YOLOv5 utils and models explicitly from yolov5 directory
@@ -33,7 +33,7 @@ client.armDisarm(True)
 
 
 # Load YOLOv5 model
-weights_path = "C:\\Users\\omtan\\OneDrive\\Desktop\\Phoenix\\Airsim-Projects\\airsim codes\\yolov5\\best.pt"
+weights_path = Path('C:\\Users\\omtan\\OneDrive\\Desktop\\Phoenix\\Airsim-Projects\\airsim codes\\yolov5\\best_ak.pt')
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = DetectMultiBackend(weights_path, device=device)
 stride, names, pt = model.stride, model.names, model.pt
@@ -53,7 +53,7 @@ FRAME_RATE = 22
 FRAME_INTERVAL = 1.0 / FRAME_RATE
 
 # Ensure 'names' is defined for your YOLO model classes
-# names = ['square', 'triangle', 'circle', 'hotspot', 'target']
+# names = ['circle', 'target', 'square', 'hotspot', 'triangle']
 
 def get_image():
     responses = client.simGetImages([airsim.ImageRequest("front", airsim.ImageType.Scene, False, False)])
