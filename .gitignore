@@ -1,5 +1,7 @@
 /airsim codes/yolov5/*
 /airsim codes/env/*
-/airsim codes/best.pt
-/airsim codes/best.torchscript
+/airsim codes/*.pt
+/airsim codes/*.torchscript
+/airsim codes/coco/*.pt
+/airsim codes/coco/*.torchscript
 /DroneBlocks-AirSim-05092021/*

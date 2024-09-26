@@ -27,7 +27,9 @@ client.confirmConnection()
 client.enableApiControl(True)
 client.armDisarm(True)
 
-# Load YOLOv5 model
+coco_classes = ['square', 'triangle', 'target', 'hotspot', 'target']
+
+
 # model = torch.jit.load("best.torchscript")
 model = torch.jit.load("best_ak.torchscript")
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

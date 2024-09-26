@@ -7,6 +7,8 @@ model = YOLO("yolov10x.pt")
 # Set the model to evaluation mode
 model.eval()
 
+model.export()
+
 # Trace the model
 traced_model = torch.jit.script(model)
 

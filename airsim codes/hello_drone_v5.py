@@ -80,7 +80,7 @@ def process_image():
                 if latest_image is not None:
                     # Preprocess image
                     img = letterbox(latest_image, img_size, stride=stride)[0]
-                    img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
+                    img = img.transpose((2, 0, 1))[::-1]
                     img = np.ascontiguousarray(img)
                     img = torch.from_numpy(img).to(device)
                     img = img.float()
